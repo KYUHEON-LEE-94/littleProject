@@ -116,10 +116,9 @@ public class Page {
 		// 현재 목록의 시작페이지번호와 마지막페이지번호 계산
 			//각 페이지의 시작페이지 =  목록별 번호 * 페이지카운트(ex. 5개씩 or 10개씩...) +1;
 		startPage = (listNo * params.getPageCount()) + 1;
-		System.out.println("startPage"+startPage);
+		
 		//각 페이지의 시작페이지 =  목록별 번호 * 페이지카운트(ex. 5개씩 or 10개씩...) + 페이지사이즈;
 		endPage = (listNo * params.getPageCount()) + params.getPageCount();
-		System.out.println("endPage"+endPage);
 		//제일 마지막 페이지 번호가 페이지의숫자들보다 클 경우,
 		if (endPage > pageCount){
 			endPage = pageCount;

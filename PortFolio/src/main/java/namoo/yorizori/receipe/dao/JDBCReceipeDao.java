@@ -31,6 +31,9 @@ public class JDBCReceipeDao implements ReceipeDao {
 		this.dataSource = dataSource;
 	}
 
+	/**
+	 * recipe생성 메서드
+	 */
 	@Override
 	public void create(Reciepe Reciepe) throws RuntimeException {
 		Connection conn = null;
@@ -38,7 +41,7 @@ public class JDBCReceipeDao implements ReceipeDao {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
 				" INSERT INTO recipe (recipe_id, book_id, recipe_name, recipe_time, recipe_level, ingredients, img_cont_type, img_file_name, writer_id) ")
-				.append("   VALUES (?,?, ?, ?, ?, ?, ?, ?, ?) ");
+				.append("   VALUES (?,?, ?, ?, ?, ?, ?, ?, ?) "); //9개
 
 		try {
 			conn = dataSource.getConnection();
@@ -77,50 +80,10 @@ public class JDBCReceipeDao implements ReceipeDao {
 
 	}
 
-	@Override
-	public Reciepe findById(int reciepeid) throws RuntimeException {
-		Reciepe reciepe = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append(
-				" SELECT recipe_id, book_id, recipe_name, recipe_time, recipe_level, ingredients, img_cont_type, img_file_name, writer_id")
-				.append(" FROM recipe").append(" WHERE recipe_id = ?");
-
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setInt(1, reciepeid);
-			result = pstmt.executeQuery();
-			if (result.next()) {
-				reciepe = makeReciepe(result);
-			}
-
-		} catch (SQLException e) {
-			// SQL Exception을 RuntimeException으로 변환
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (result != null)
-					result.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return reciepe;
-	}
+	
 	
 	/**
-	 * 개수 파악을 위한 메서드
-	 * @param type
-	 * @param value
-	 * @return
+	 * 등록된 레시피 총개수 파악을 위한 메서드 for paging처리를 위하여
 	 */
 	@Override
 	public int reciepCount(int id) {
@@ -130,7 +93,7 @@ public class JDBCReceipeDao implements ReceipeDao {
 		ResultSet result = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT COUNT(*) cnt").append(" FROM recipe")
-		.append(" WHERE recipe_id = ?");
+		.append(" WHERE book_id = ?");
 
 		try {
 			conn = dataSource.getConnection();
@@ -160,7 +123,10 @@ public class JDBCReceipeDao implements ReceipeDao {
 	}
 	
 	
-
+	/**
+	 * paging처리가 가능하도록 param을 받고, 조회된 bookid를 추가로 받는 메서드
+	 *	쿡북리스트에서 -> 레시피 목록으로 넘어갈때, 해당 bookid를 인자로 받아서 그 쿡북의 레시피 목록을 조회하기 위함
+	 */
 	@Override
 	public List<Map<String, Object>> findAllRecipe(Params params, int id) throws RuntimeException {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -171,7 +137,7 @@ public class JDBCReceipeDao implements ReceipeDao {
 		sb.append(" SELECT recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id")
 		.append(" FROM ( SELECT CEIL(rownum / ?) request_page, recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id")
 		.append(" FROM   ( SELECT recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id ")
-		.append(" FROM recipe WHERE recipe_id = ?))")
+		.append(" FROM recipe WHERE book_id = ?))")
 		.append(" WHERE  request_page = ?");
 
 		try {
@@ -212,21 +178,6 @@ public class JDBCReceipeDao implements ReceipeDao {
 		return list;
 	}
 
-	// ------
-	private Reciepe makeReciepe(ResultSet result) throws SQLException {
-		Reciepe reciepe = new Reciepe();
 
-		reciepe.setReceipeId(result.getInt("recipe_id"));
-		reciepe.setBookId(result.getInt("book_id"));
-		reciepe.setReceipeName(result.getString("recipe_name"));
-		reciepe.setReceipeTime(result.getInt("recipe_time"));
-		reciepe.setReceipeLevel(result.getInt("recipe_level"));
-		reciepe.setIngredients(result.getString("ingredients"));
-		reciepe.setImgContType(result.getString("img_cont_type"));
-		reciepe.setImgFileName(result.getString("img_file_name"));
-		reciepe.setWriterId(result.getString("writer_id"));
-
-		return reciepe;
-	}
 
 }

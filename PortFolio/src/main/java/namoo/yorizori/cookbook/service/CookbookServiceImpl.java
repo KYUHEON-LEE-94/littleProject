@@ -37,15 +37,8 @@ public class CookbookServiceImpl implements CookbookService {
 		Cookbookdao.create(cookBoock);
 	}
 
-	@Override
-	public List<Cookbook> findAllCookbooks() {
-		return Cookbookdao.findAll();
-	}
 
-	@Override
-	public Cookbook findCookbook(int bookId) {
-		return Cookbookdao.findCookbook(bookId);
-	}
+
 	
 	@Override
 	public List<Map<String, Object>> findAllBySearchOption(Params params) {
@@ -66,7 +59,7 @@ public class CookbookServiceImpl implements CookbookService {
 
 	@Override
 	public List<Map<String, Object>> finAllCookbooksWithName() {
-		return Cookbookdao.finAllCookbooksWithName();
+		return Cookbookdao.finAllCookbooks();
 	}
 	
 
@@ -75,10 +68,6 @@ public class CookbookServiceImpl implements CookbookService {
 		return Cookbookdao.MainIndexList();
 	}
 	//-----------레시피 서비스-----------------
-	@Override
-	public Reciepe findRecipeById(int reciepeId) {
-		return ReceipeDao.findById(reciepeId);
-	}
 
 	@Override
 	public void registerRecipe(Reciepe Reciepe) {

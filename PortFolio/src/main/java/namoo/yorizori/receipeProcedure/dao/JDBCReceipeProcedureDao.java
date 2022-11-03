@@ -33,6 +33,9 @@ public class JDBCReceipeProcedureDao implements ReceipeProcedureDao {
 		this.dataSource = dataSource;
 	}
 
+	/**
+	 * 레시피 상세 정보를 생성하기 위한 메서드
+	 */
 	@Override
 	public void create(ReciepeProcedure ReciepeProcedure) throws RuntimeException {
 		Connection conn = null;
@@ -74,6 +77,9 @@ public class JDBCReceipeProcedureDao implements ReceipeProcedureDao {
 
 	}
 
+	/**
+	 * recipe와 recipeProcedure 테이블을 조인해서, detail정보를 보여주기 위한 메서드
+	 */
 	@Override
 	public List<Map<String, Object>> findRecipeContents(int id) throws RuntimeException {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -125,14 +131,5 @@ public class JDBCReceipeProcedureDao implements ReceipeProcedureDao {
 				return list;
 				
 	}
-
-
-	public static void main(String[] args) {
-		ServiceFactory serviceFactory = ServiceFactoryImpl.getInstance();
-		CookbookService userService = serviceFactory.getReceipeProcedureService();
-		System.out.println(userService.findRecipeContents(25));
-		
-	}
-
 
 }

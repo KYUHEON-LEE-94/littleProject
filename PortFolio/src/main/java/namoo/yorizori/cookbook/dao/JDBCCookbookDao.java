@@ -11,10 +11,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import namoo.yorizori.common.factory.ServiceFactoryImpl;
 import namoo.yorizori.common.web.Params;
 import namoo.yorizori.cookbook.dto.Cookbook;
-import namoo.yorizori.cookbook.service.CookbookService;
 
 public class JDBCCookbookDao implements CookbookDao {
 
@@ -25,6 +23,9 @@ public class JDBCCookbookDao implements CookbookDao {
 		this.dataSource = dataSource;
 	}
 
+	/**
+	 * cookbook생성 메서드
+	 */
 	@Override
 	public void create(Cookbook cookbook) throws RuntimeException {
 		Connection conn = null;
@@ -102,6 +103,9 @@ public class JDBCCookbookDao implements CookbookDao {
 		return count;
 	}
 	
+	/**
+	 * paging 처리가 가능한 리스트 함수
+	 */
 	public List<Map<String, Object>> findAllBySearchOption(Params params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = null;
@@ -159,84 +163,11 @@ public class JDBCCookbookDao implements CookbookDao {
 		return list;
 	}
 
+
+
+	//모든 쿡북리스트 조회 메서드
 	@Override
-	public List<Cookbook> findAll() throws RuntimeException {
-		List<Cookbook> list = new ArrayList<Cookbook>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append(" SELECT book_id, book_name, book_desc, author_id").append(" FROM cookbook");
-
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement(sb.toString());
-			result = pstmt.executeQuery();
-			while (result.next()) {
-				Cookbook cookbook = makeCookbook(result);
-				list.add(cookbook);
-			}
-
-		} catch (SQLException e) {
-			// SQL Exception을 RuntimeException으로 변환
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (result != null)
-					result.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return list;
-	}
-
-	@Override
-	public Cookbook findCookbook(int bookId) throws RuntimeException {
-		Cookbook cookbook = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append(" SELECT book_id, book_name, book_desc, author_id").append(" FROM cookbook")
-				.append(" WHERE book_id = ?");
-
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setInt(1, bookId);
-			result = pstmt.executeQuery();
-			if (result.next()) {
-				cookbook = makeCookbook(result);
-			}
-
-		} catch (SQLException e) {
-			// SQL Exception을 RuntimeException으로 변환
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (result != null)
-					result.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return cookbook;
-	}
-
-
-	@Override
-	public List<Map<String, Object>> finAllCookbooksWithName() throws RuntimeException {
+	public List<Map<String, Object>> finAllCookbooks() throws RuntimeException {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 				
 				Connection conn = null;
@@ -283,7 +214,7 @@ public class JDBCCookbookDao implements CookbookDao {
 	
 	
 	/***
-	 * 레시피 디테일까지 등록되어 있어야지 메인에 소개된다는 설정
+	 * Main화면에서 등록된 날짜순으로 8개까지만 보여주기 위한 List 메서드
 	 */
 	@Override
 	public List<Map<String, Object>> MainIndexList () throws RuntimeException {
@@ -293,10 +224,13 @@ public class JDBCCookbookDao implements CookbookDao {
 				PreparedStatement pstmt = null;
 				ResultSet result = null;
 				StringBuilder sb = new StringBuilder();
-				sb.append(" SELECT DISTINCT u.id, c.book_id, u.regdate, u.popular, r.recipe_name, r.recipe_time, r.recipe_level, c.book_desc, r.img_file_name")
-				.append(" FROM cookbook c")
-				.append(" JOIN recipe r ON c.book_id = r.book_id")
-				.append(" JOIN users u ON r.writer_id = u.id");
+				sb.append(" SELECT id, book_id, recipe_name, recipe_time, recipe_level, book_desc, img_file_name, regdate")
+				.append(" FROM ( SELECT CEIL(rownum / 8), s.id, s.book_id, s.recipe_name, s.recipe_time, s.recipe_level, s.book_desc, s.img_file_name, s.regdate")
+					.append(" FROM   (SELECT u.id, c.book_id, r.recipe_name, r.recipe_time, r.recipe_level, c.book_desc, r.img_file_name, u.regdate")
+						.append(" FROM cookbook c")
+						.append(" JOIN recipe r ON c.book_id = r.book_id")
+						.append(" JOIN users u ON r.writer_id = u.id)s ")
+					.append(" ORDER BY regdate)");
 
 
 				
@@ -308,12 +242,12 @@ public class JDBCCookbookDao implements CookbookDao {
 						Map<String, Object> row = new HashMap<String, Object>();
 						row.put("id", result.getString("id"));
 						row.put("bookId", result.getInt("book_id"));
-						row.put("regdate", result.getString("regdate"));
 						row.put("recipeName", result.getString("recipe_name"));
 						row.put("recipeTime", result.getInt("recipe_time"));
 						row.put("recipeLevel", result.getInt("recipe_level"));
 						row.put("bookDesc", result.getString("book_desc"));
 						row.put("imgFileName", result.getString("img_file_name"));
+						row.put("regdate", result.getString("regdate"));
 						
 						list.add(row);
 					}
@@ -336,21 +270,5 @@ public class JDBCCookbookDao implements CookbookDao {
 				
 	}
 	
-
-
-	private Cookbook makeCookbook(ResultSet result) throws SQLException {
-		Cookbook cookbook = new Cookbook();
-
-		cookbook.setBookId(result.getInt("book_id"));
-		cookbook.setBookName(result.getString("book_name"));
-		cookbook.setBookDesc(result.getString("book_desc"));
-		cookbook.setAuthorId(result.getString("author_id"));
-
-		return cookbook;
-	}
-	public static void main(String[] args) {
-		CookbookService service = ServiceFactoryImpl.getInstance().getCookbookService();
-		System.out.println(service.findCookbook(1));
-	}
 
 }

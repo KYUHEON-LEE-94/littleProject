@@ -27,7 +27,8 @@ import namoo.yorizori.receipeProcedure.dto.ReciepeProcedure;
 @MultipartConfig(
 		// 이 파일 용량 이상일때만 임시 폴더에 파일 생성 - fileSizeThreshold
 		fileSizeThreshold = 1024 * 1024 * 1, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024
-				* 15, location = "C:/Users/LEE KYUHEON/eclipse-workspace/Lee.yorizori/upload-img")
+				* 15, 
+				location = "C:/Users/LEE KYUHEON/eclipse-workspace/Lee.PortFolio/src/main/webapp/assets")
 public class RecipeRegistertController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -37,8 +38,8 @@ public class RecipeRegistertController extends HttpServlet {
 			throws ServletException, IOException {
 
 		//쿼리 스트링으로 넘어온 bookid값을 읽어서 recipeForm.jsp의 value에 기록할 수 있게 전달
-		String bookId = request.getParameter("bookId");
-		request.setAttribute("bookId", bookId);
+		String bookId = request.getParameter("bookId");	
+		request.setAttribute("bookId", Integer.parseInt(bookId));
 		
 		Cookie[] cookies = request.getCookies();
 		String loginId = null;
@@ -62,13 +63,25 @@ public class RecipeRegistertController extends HttpServlet {
 			throws ServletException, IOException {
 
 		
+
 		String recipeName = request.getParameter("recipe_name");
-		// writerId = user_id = author_id
+
 		String writerId = request.getParameter("user_id");
+		
 		String recipeTime = request.getParameter("recipe_time");
+		Integer recipeTimeint = Integer.parseInt(recipeTime);	
+		
 		String recipeLevel = request.getParameter("recipe_level");
+		Integer recipeLevelint = Integer.parseInt(recipeLevel);
+		
 		String ingredients = request.getParameter("ingredients");
-		String bookId = request.getParameter("bookId");
+		
+		int bookId = 0;
+		try {
+			bookId = Integer.parseInt(request.getParameter("bookId"));
+		} catch (Exception e) {
+			
+		}
 
 		// 파일은 Part객체로 받아온다. //name
 		Part part = request.getPart("img_file_name");
@@ -84,11 +97,13 @@ public class RecipeRegistertController extends HttpServlet {
 		int recipeId = recipeIDMake();
 		
 		reciepe.setReceipeId(recipeId);
-		reciepe.setBookId(Integer.parseInt(bookId));
+		//recipe 입력받는 부분
+		
+		reciepe.setBookId(bookId);
 		reciepe.setReceipeName(recipeName);
 		reciepe.setWriterId(writerId);
-		reciepe.setReceipeTime(Integer.parseInt(recipeTime));
-		reciepe.setReceipeLevel(Integer.parseInt(recipeLevel));
+		reciepe.setReceipeTime(recipeTimeint);
+		reciepe.setReceipeLevel(recipeLevelint);
 		reciepe.setIngredients(ingredients);
 		reciepe.setImgContType(contentType);
 		reciepe.setImgFileName(imgFileName);
@@ -100,9 +115,8 @@ public class RecipeRegistertController extends HttpServlet {
 		//--------------------------------------
 		
 		
-		// 레시피프로시저 DB에 저장
+		// 레시피프로시저 DB에 저장하는 프로시저
 		ReciepeProcedure receipeProcedure = new ReciepeProcedure();
-
 		CookbookService ProcedureService = ServiceFactoryImpl.getInstance().getReceipeProcedureService();
 
 		receipeProcedure.setReceipeId(recipeId);
@@ -110,7 +124,7 @@ public class RecipeRegistertController extends HttpServlet {
 		receipeProcedure.setSeqNum(number);
 
 		ProcedureService.registerRecipeProcedure(receipeProcedure);
-		File file = new File("C:/Users/LEE KYUHEON/eclipse-workspace/Lee.yorizori/src/main/webapp/assets");
+		File file = new File("C:/Users/LEE KYUHEON/eclipse-workspace/Lee.PortFolio/src/main/webapp/assets");
 		// file이 없으면 파일을 생성해라~
 		if (!file.exists()) {
 			file.mkdirs();
@@ -121,17 +135,18 @@ public class RecipeRegistertController extends HttpServlet {
 		// DB 테이블 저장
 
 		// 임시 메인
-		response.sendRedirect("/recipe/recipeList.do");
+		response.sendRedirect("/cookbook/list.do");
 
 	}
 
-	public static int recipeIDMake() {
+	/**
+	 * recipeID를 랜덤하게 넣어주기 위해서 생성
+	 * @return
+	 */
+	private static int recipeIDMake() {
 		
-        Random rd = new Random();//랜덤 객체 생성
-        
-       int RecipeId = (rd.nextInt(500)+1);
-        
-		
+        Random rd = new Random();//랜덤 객체 생성     
+        int RecipeId = (rd.nextInt(500)+1);		
 		return RecipeId;
 	}
 	

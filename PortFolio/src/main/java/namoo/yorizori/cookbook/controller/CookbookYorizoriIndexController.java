@@ -15,7 +15,7 @@ import namoo.yorizori.cookbook.dto.Cookbook;
 import namoo.yorizori.cookbook.service.CookbookService;
 
 /**
- * 요리책 등록 화면 및 등록 처리 서블릿 컨트롤러
+ * 요리조리 메인사이트 서블릿
  */
 @WebServlet("/cookbook/indexYorizori.do")
 public class CookbookYorizoriIndexController extends HttpServlet {
@@ -23,15 +23,12 @@ public class CookbookYorizoriIndexController extends HttpServlet {
 
 	// 등록 화면 처리
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
-
-		
+			
 		CookbookService service = ServiceFactoryImpl.getInstance().getCookbookService();
+		
 		List<Map<String, Object>> list = service.MainIndexList();
 
 		request.setAttribute("list", list);
-
 		
 		request.getRequestDispatcher("/WEB-INF/views/yorizori.jsp").forward(request, response);
 		

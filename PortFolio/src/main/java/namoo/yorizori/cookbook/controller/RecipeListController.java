@@ -22,8 +22,15 @@ public class RecipeListController extends HttpServlet {
 	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String bookId = request.getParameter("bookId");
+			throws ServletException, IOException {		
+		int bookId = 0;
+		
+		try {
+			bookId = Integer.parseInt(request.getParameter("bookId"));
+		} catch (Exception e) {
+			
+		}
+		
 		request.setAttribute("bookId", bookId);
 		
 		String type = request.getParameter("type");
@@ -61,24 +68,34 @@ public class RecipeListController extends HttpServlet {
 		Params params = new Params(type, value, pageSize, pageCount, requestPage);
 		
 		CookbookService service = ServiceFactoryImpl.getInstance().getReceipeService();
-		
-		//bookId = recipeId
-		int bookidInt = Integer.parseInt(bookId);
-				
-		List<Map<String, Object>> RecipeList = service.findAllRecipe(params,bookidInt);
+						
+		List<Map<String, Object>> RecipeList = service.findAllRecipe(params,bookId);
 		
 		request.setAttribute("RecipeList", RecipeList);
-					
-		
+							
 		//전체 개수를 확인하기 위해서
-		int count = service.recipeCount(bookidInt);
+		int count = service.recipeCount(bookId);
 		//전체 개수를 JSP에서 보여주기 위해서 set함
 		request.setAttribute("count", count);
 		
 		Page paging = new Page(params, count);
 		paging.build();
+		request.setAttribute("paging", paging);
 					
 		request.getRequestDispatcher("/WEB-INF/views/reciepe/recipeList.jsp").forward(request, response);
+		
+	}
+	public static void main(String[] args) {
+		
+		
+		
+		Params params = new Params("", "", 3, 3, 1);
+		
+		CookbookService service = ServiceFactoryImpl.getInstance().getReceipeService();
+		List<Map<String, Object>> RecipeList = service.findAllRecipe(params,61);
+		for (Map<String, Object> map : RecipeList) {
+			System.out.println(map);
+		}
 		
 	}
 

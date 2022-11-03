@@ -22,6 +22,7 @@ public class CookbookFormController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	// 등록 화면 처리
+		//저장된 쿠키를 읽어서, 로그인이 되어있을 경우에만 등록 가능
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Cookie[] cookies = request.getCookies();

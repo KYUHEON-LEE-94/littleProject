@@ -13,7 +13,6 @@ import namoo.yorizori.receipe.dto.Reciepe;
  */
 public interface ReceipeDao {
 	public void create(Reciepe Reciepe) throws RuntimeException;
-	public Reciepe findById(int id) throws RuntimeException;
 	public List<Map<String, Object>> findAllRecipe(Params params, int id) throws RuntimeException;
 	public int reciepCount(int id) throws RuntimeException;
 }

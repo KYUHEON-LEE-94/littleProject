@@ -64,19 +64,21 @@ public class CookbookListController extends HttpServlet {
 		List<Map<String, Object>> list = service.findAllBySearchOption(params);
 		
 		request.setAttribute("CookbookList", list);
-					System.out.println(list);
+
 		
-		//전체 개수를 확인하기 위해서
-		int count = service.searchCount(type, value);
 		//전체 개수를 JSP에서 보여주기 위해서 set함
-		request.setAttribute("count", count);
-		System.out.println(count);
+		int count = service.searchCount(type, value);
+		request.setAttribute("count", count);;
+		
+		
 		Page paging = new Page(params, count);
 		paging.build();
-		request.setAttribute("paging", paging);		
-		request.getRequestDispatcher("/WEB-INF/views/cookbook/cookbookList.jsp").forward(request, response);
+		//JSP로 paging을 전달해서 paging처리할 수 있도록
+		request.setAttribute("paging", paging);	
 		
-		//검색기능이나, 페이징 처리도 추가해보기
+		
+		request.getRequestDispatcher("/WEB-INF/views/cookbook/cookbookList.jsp").forward(request, response);
+
 	}
 	
 

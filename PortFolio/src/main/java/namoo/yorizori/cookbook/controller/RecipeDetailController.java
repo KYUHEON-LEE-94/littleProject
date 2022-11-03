@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import namoo.yorizori.cookbook.service.CookbookService;
 
 /**
  * Cookbook 안에 recipe가 포함되어 있기 때문에 따로 분리 안함
- * 레시피 등록 처리 서블릿 컨트롤러
+ * 상세 레시피 컨트롤러
  */
 @WebServlet("/recipe/detail.do")
 
@@ -28,8 +27,9 @@ public class RecipeDetailController extends HttpServlet {
 		//등록은 로그인을 해야지만 가능하기 떄문에 로그인 여부 확인
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		String bookid = request.getParameter("bookId");
-		int bookIdInt = Integer.parseInt(bookid);
+		Integer bookIdInt = Integer.parseInt(bookid);
 		
 		CookbookService service = ServiceFactoryImpl.getInstance().getReceipeProcedureService();
 		List<Map<String, Object>> RecipeAll = service.findRecipeContents(bookIdInt);
