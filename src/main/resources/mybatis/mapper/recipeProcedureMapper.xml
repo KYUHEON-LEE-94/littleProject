@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lee.yorizori_mybatis.recipeProcedure.mapper.RecipeProcedureMapper"> <!-- 인터페이스 이름과 일치 -->
+
+    <insert id="create" parameterType="ReciepeProcedure">
+        INSERT INTO recipe_procedure(RECIPE_ID, SEQ_NUM, PROCEDURE)
+        VALUES ( (SELECT recipe_id FROM recipe WHERE recipe_id = #{receipeId}) ,#{seqNum},#{procedure[seqNum-1]})
+    </insert>
+
+    <select id="findRecipeContents"
+            resultType="Object">
+        SELECT r.RECIPE_ID, r.recipe_name, r.recipe_time, r.recipe_level, r.writer_id,r.INGREDIENTS, rp.SEQ_NUM,rp.PROCEDURE,r.img_cont_type, r.img_file_name
+        FROM recipe r
+                 JOIN recipe_procedure rp on r.RECIPE_ID = rp.RECIPE_ID
+        WHERE r.book_id = #{id}
+    </select>
+
+
+
+</mapper>
