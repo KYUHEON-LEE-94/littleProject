@@ -1,14 +1,16 @@
 package lee.yorizori_mybatis.cookbook.service;
 
-import lee.yorizori_mybatis.common.web.Params;
+import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.cookbook.dto.Cookbook;
 import lee.yorizori_mybatis.cookbook.mapper.CookbookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CookbookServiceImpl implements CookbookService {
 
     @Autowired

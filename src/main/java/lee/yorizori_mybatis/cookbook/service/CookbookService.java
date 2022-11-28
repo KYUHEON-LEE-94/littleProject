@@ -1,10 +1,7 @@
 package lee.yorizori_mybatis.cookbook.service;
 
-import lee.yorizori_mybatis.common.web.Params;
+import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.cookbook.dto.Cookbook;
-import lee.yorizori_mybatis.user.dto.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,7 +11,7 @@ import java.util.List;
  * @author Lee KyuHeon
  *
  */
-@Mapper
+
 public interface CookbookService {
 	public void create(Cookbook cookbook);
 

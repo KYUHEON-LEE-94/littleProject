@@ -1,7 +1,7 @@
 package lee.yorizori_mybatis.cookbook.controller;
 
-import lee.yorizori_mybatis.common.web.Page;
-import lee.yorizori_mybatis.common.web.Params;
+import lee.yorizori_mybatis.common.web.page.Page;
+import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.cookbook.dto.Cookbook;
 import lee.yorizori_mybatis.cookbook.service.CookbookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,6 +10,7 @@ import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import javax.servlet.http.Cookie;
@@ -23,7 +24,7 @@ public class LoginController {
     private UserServiceImpl userService;
 
     @GetMapping("/user/login.do")
-    public String getLogOut(HttpServletRequest request, HttpServletResponse response) {
+    public String getLogOut(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirect) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
@@ -36,6 +37,10 @@ public class LoginController {
                     response.addCookie(cookie);
 
                 }
+                if (name.equalsIgnoreCase("saveid")) {
+                    redirect.addAttribute("saveid",cookie.getValue());
+
+                }
             }
 
         }
@@ -46,16 +51,19 @@ public class LoginController {
     public String Login(@RequestParam("id") String id,
                         @RequestParam("passwd") String passwd,
                         @RequestParam("saveid") String saveid,
-            HttpServletRequest request, HttpServletResponse response
+            HttpServletRequest request, HttpServletResponse response,
+                        RedirectAttributes redirect,
+                        Model model
                         ){
 
         User loginUser = userService.findByIdAndPasswd(id,passwd);
-
 
         if (loginUser != null) {
             Cookie loginCookie = new Cookie("loginid", loginUser.getId());
             loginCookie.setPath("/");
             response.addCookie(loginCookie);
+            redirect.addAttribute("loginid",loginUser.getId());
+            redirect.addAttribute("loginStat", true);
 
 
             if (saveid != null) {

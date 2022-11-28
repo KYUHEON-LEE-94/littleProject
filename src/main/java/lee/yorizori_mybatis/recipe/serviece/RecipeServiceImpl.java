@@ -1,15 +1,16 @@
 package lee.yorizori_mybatis.recipe.serviece;
 
-import lee.yorizori_mybatis.common.web.Params;
+import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.recipe.dto.Recipe;
 import lee.yorizori_mybatis.recipe.mapper.RecipeMapper;
-import lee.yorizori_mybatis.recipe.serviece.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private RecipeMapper recipeMapper;

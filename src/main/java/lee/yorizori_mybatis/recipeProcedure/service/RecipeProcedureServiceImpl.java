@@ -4,10 +4,12 @@ import lee.yorizori_mybatis.recipeProcedure.dto.ReciepeProcedure;
 import lee.yorizori_mybatis.recipeProcedure.mapper.RecipeProcedureMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class RecipeProcedureServiceImpl implements RecipeProcedureService {
 
     @Autowired

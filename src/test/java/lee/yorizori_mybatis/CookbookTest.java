@@ -1,14 +1,9 @@
 package lee.yorizori_mybatis;
 
 
-import lee.yorizori_mybatis.common.web.Params;
+import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.cookbook.dto.Cookbook;
-import lee.yorizori_mybatis.cookbook.mapper.CookbookMapper;
-import lee.yorizori_mybatis.cookbook.service.CookbookService;
 import lee.yorizori_mybatis.cookbook.service.CookbookServiceImpl;
-import lee.yorizori_mybatis.user.dto.User;
-import lee.yorizori_mybatis.user.mapper.UserMapper;
-import lee.yorizori_mybatis.user.service.UserServiceImpl;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

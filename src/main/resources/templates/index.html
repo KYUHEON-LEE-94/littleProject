@@ -28,20 +28,18 @@
           <li class="nav-item"><a class="nav-link" href="/cookbook/register.do">요리책 등록</a></li>
           <li class="nav-item"><a class="nav-link" href="/cookbook/list.do">요리책 목록</a></li>
         </ul>
-<!--        <th:block th:text=""></th:block>-->
 
         <!--/* 로그인 성공했을시 */-->
-        <th:block th:each="cookie: ${#request.getCookies()}" >
 
-          <th:block th:if="${cookie.getName().contains('loginid')}">
+          <th:block th:if="${param.get('loginStat')}">
             <div class="col-4">
-              [[${cookie.getValue()}]]님 환영합니다.
+              [[${param.get('loginid')}]]님 환영합니다.
               <button type="button" class="btn btn-danger"
                       onclick="location.href='/user/login.do'">로그아웃</button>
             </div>
           </th:block>
 
-          <th:block th:unless="${cookie.getName().contains('loginid')}">
+          <th:block th:if="${param.get('loginStat') == null}">
             <form class="row row-cols-lg-auto g-3 align-items-center"
                   method="post" action="/user/login.do">
               <div class="col-12">
@@ -54,7 +52,7 @@
 
               <div class="col-12">
                 <input type="text" size="8" maxlength="8" class="form-control"
-                       id="id" name="id" placeholder="아이디" th:value="${cookie.getValue()}">
+                       id="id" name="id" placeholder="아이디" th:value="${param.get('saveid')}">
               </div>
 
               <div class="col-12">
@@ -70,9 +68,6 @@
               </div>
             </form>
           </th:block>
-
-            </th:block>
-
 
 
         </div>

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Lee KyuHeon
  *
  */
-@Mapper
+
 public interface UserService {
 	public void create(User user);
 	public List<User> findAll();
