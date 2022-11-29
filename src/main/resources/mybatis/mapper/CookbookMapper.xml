@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lee.yorizori_mybatis.cookbook.mapper.CookbookMapper"> <!-- 인터페이스 이름과 일치 -->
+
+    <insert id="create" parameterType="Cookbook">
+        INSERT INTO cookbook (book_id, book_name, book_desc, author_id)
+        VALUES(cookbook_seq.nextval,#{bookName}, #{bookDesc},#{authorId})
+        </insert>
+
+    <select id="countCookbook"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM cookbook
+    </select>
+
+    <select id="findAllPaging" parameterType="Params"
+            resultType="Cookbook">
+        SELECT book_id, book_name, book_desc, author_id, u.name authorName
+        FROM ( SELECT CEIL(rownum / #{pageSize}) request_page,  book_id, book_name, book_desc, author_id
+        FROM   ( SELECT  book_id, book_name, book_desc, author_id
+                 FROM cookbook) )c
+        JOIN users u on c.author_id = u.id
+        WHERE  request_page = #{requestPage}
+    </select>
+
+
+
+        <select id="finAllCookbooks"
+                resultType="Cookbook">
+            SELECT c.book_id bookId, c.book_name bookName, c.book_desc bookDesc, c.author_id authorId, u.name authorName
+            FROM cookbook c
+            JOIN users u on c.author_id = u.id
+        </select>
+
+        <select id="MainIndexList" resultType="CookbookMainDto">
+            SELECT id,book_name, book_id, recipe_name, recipe_time, recipe_level, book_desc, img_file_name, regdate
+            FROM ( SELECT CEIL(rownum / 8), s.id,s.book_name, s.book_id, s.recipe_name, s.recipe_time, s.recipe_level, s.book_desc, s.img_file_name, s.regdate
+                   FROM   (SELECT u.id,c.book_name, c.book_id, r.recipe_name, r.recipe_time, r.recipe_level, c.book_desc, r.img_file_name, u.regdate
+                           FROM cookbook c
+                                    JOIN recipe r ON c.book_id = r.book_id
+                                    JOIN users u ON r.writer_id = u.id)s
+            ORDER BY regdate)
+        </select>
+
+
+
+</mapper>	

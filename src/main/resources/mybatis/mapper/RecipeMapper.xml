@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lee.yorizori_mybatis.recipe.mapper.RecipeMapper"> <!-- 인터페이스 이름과 일치 -->
+        <insert id="create" parameterType="Recipe">
+            INSERT INTO recipe (recipe_id, book_id, recipe_name, recipe_time, recipe_level, ingredients, img_cont_type, img_file_name, writer_id)
+            VALUES(#{receipeId},#{bookId}, #{receipeName},#{receipeTime}, #{receipeLevel},#{Ingredients}, #{ImgContType},#{ImgFileName},#{WriterId})
+        </insert>
+
+        <select id="recipeCount"
+                resultType="int">
+            SELECT COUNT(*)
+            FROM recipe
+            WHERE book_id =#{bookid}
+        </select>
+
+        <select id="findAllRecipe" parameterType="params"
+                resultType="Recipe">
+            SELECT recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id
+            FROM ( SELECT CEIL(rownum / #{params.pageSize}) request_page, recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id
+                FROM   ( SELECT recipe_id, book_id, recipe_name, recipe_time, recipe_level, img_cont_type, img_file_name, writer_id
+                FROM recipe WHERE book_id = #{id}))
+            WHERE  request_page = #{params.requestPage}
+        </select>
+
+    <select id="findRecipeContents"
+            resultType="Recipe">
+        SELECT r.RECIPE_ID, r.recipe_name, r.recipe_time, r.recipe_level, r.writer_id,r.INGREDIENTS, rp.SEQ_NUM,rp.PROCEDURE,r.img_cont_type, r.img_file_name
+        FROM recipe r
+                 JOIN recipe_procedure rp on r.RECIPE_ID = rp.RECIPE_ID
+        WHERE r.book_id = #{bookid}
+    </select>
+
+</mapper>	

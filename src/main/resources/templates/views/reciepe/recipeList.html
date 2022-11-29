@@ -1,0 +1,130 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/index :: layout(~{::title},~{::body})}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>요리조리 요리책</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="includes/favicon.ico" />
+  <!-- Bootstrap icons-->
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+          rel="stylesheet" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+
+<!-- Section-->
+<section>
+  <div class="container px-4 px-lg-5 mt-5">
+    <div class="row">
+      <div class="col h2 fw-bold">
+        레시피 목록 <a href="/recipe/register.do?bookId=${bookId}"
+                  class="btn btn-md btn-warning">레시피 등록</a>
+      </div>
+      <input type='hidden' name='bookId' value='${bookId}'>
+    </div>
+    <div class="row" style="height: 15px">
+      <p class="col">
+					<span class="fs-4 fw-bold text-warning bg-dark align-middle">
+						[한식 요리책 ] </span> 한식 요리를 맛있게 만드는 방법을 설명합니다.
+      </p>
+    </div>
+  </div>
+
+  <div class="container px-4 px-lg-5 mt-5">
+    <div
+            class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        <th:block th:if="${count != 0}" >
+          <th:block th:each="Recipe:${RecipeList}">
+            <!-- book details-->
+            <div class="col mb-5">
+              <div class="card h-70">
+                <img class="card-img-top"
+                     th:src="@{/assets/${Recipe.getImgFileName()}}"
+                     th:alt="${Recipe.getImgFileName()}" />
+                <!-- 레시피 details-->
+                <div class="card-body p-4">
+                  <div class="text-center">
+                    <!-- 레시피 name-->
+                    <h5 class="fw-bolder">[[${Recipe.getReceipeName()}]]</h5>
+                    <!-- 요리시간, 난이도 -->
+                    <th:block th:switch="${Recipe.getReceipeLevel()}">
+                      <th:block th:case="${1}">
+                        <td>[[${RecipeList.recipeTime}]]분 / 난이도: 하</td>
+                      </th:block>
+                      <th:block th:case="${2}">
+                        <td>[[${RecipeList.recipeTime}]]분 / 난이도:중</td>
+                      </th:block>
+                      <th:block th:case="${3}">
+                        <td>[[${RecipeList.recipeTime}]]분 / 난이도:상</td>
+                      </th:block>
+                    </th:block>
+                  </div>
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                      <a class="btn btn-md btn-warning"
+                         th:href="@{/recipe/detail.do(bookId=${Recipe.getBookId()})}">요리책
+                        상세보기 </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Product actions-->
+              </div>
+            </div>
+          </th:block>
+        </th:block>
+        <th:block th:if="${count == 0}">
+          <div>
+            <h2 style="color: red; text-align: center">목록이 존재하지 않습니다.</h2>
+          </div>
+        </th:block>
+
+
+    </div>
+
+    <div class="pagination">
+      <th:block th:if="${paging.isShowFirst()}">
+        <a th:href="${paging.getQueryString(1)}">처음으로</a>
+      </th:block>
+      <th:block th:if="${paging.isShowPrevious()}">
+        <a th:href="${paging.getQueryString(paging.getPreviousStartPage())}">
+          > </a>
+      </th:block>
+      <th:block th:each="j : ${#numbers.sequence(paging.getStartPage(), paging.getEndPage())}">
+
+        <th:block th:if="${j == params.getRequestPage() }">
+          <a class='active'>[[${j}]]</a>
+        </th:block>
+        <th:block th:unless="${j != params.getRequestPage() }">
+          <a th:href="${paging.getQueryString(j)}">[[${j}]]</a>
+        </th:block>
+
+      </th:block>
+
+      <th:block th:if="${paging.isShowNext()}">
+        <a th:href="${paging.getQueryString(paging.getNextStartPage())}">
+          > </a>
+      </th:block>
+      <th:block th:if ="${paging.isShowLast() }">
+        <a th:href="${paging.getQueryString(paging.getPageCount())}">끝으로</a>
+      </th:block>
+    </div>
+
+  </div>
+
+
+
+
+</section>
+
+
+<!-- Bootstrap core JS-->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+</html>
