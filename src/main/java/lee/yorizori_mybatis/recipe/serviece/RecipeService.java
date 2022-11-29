@@ -10,4 +10,6 @@ public interface RecipeService {
     public void create(Recipe Recipe);
     public List<Recipe> findAllRecipe(Params params, int id);
     public int recipeCount(int bookid);
+
+    public List<Recipe> findRecipeContents(int bookid);
 }

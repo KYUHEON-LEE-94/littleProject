@@ -12,4 +12,6 @@ public interface RecipeMapper {
     public void create(Recipe Recipe);
     public List<Recipe> findAllRecipe(@Param("params") Params params, @Param("id") int id);
     public int recipeCount(int bookid);
+
+    public List<Recipe> findRecipeContents(int bookid);
 }

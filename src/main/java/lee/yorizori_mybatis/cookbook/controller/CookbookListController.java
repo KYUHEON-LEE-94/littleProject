@@ -21,18 +21,12 @@ public class CookbookListController {
     CookbookServiceImpl cookbookService;
 
     @GetMapping
-    public String doGet(@RequestParam String type,
-                        @RequestParam String value,
-                        @RequestParam String size,
-                        @RequestParam("page") String selectPage,
+    public String doGet(@RequestParam(required = false, defaultValue = "") String type,
+                        @RequestParam(required = false, defaultValue = "") String value,
+                        @RequestParam(value ="size", required = false) String size,
+                        @RequestParam(value="page", required = false) String selectPage,
                         Model model){
-        if (type == null) {
-            type = "";
-        }
 
-        if (value == null) {
-            value = "";
-        }
 
         /**
          * Default로 값을 정해놓는다.
@@ -62,6 +56,7 @@ public class CookbookListController {
 
         List<Cookbook> list = cookbookService.findAllPaging(params);
 
+
         model.addAttribute("CookbookList", list);
 
 
@@ -76,5 +71,4 @@ public class CookbookListController {
 
         return "/views/cookbook/cookbookList";
     }
-
 }

@@ -29,4 +29,9 @@ public class RecipeServiceImpl implements RecipeService {
     public int recipeCount(int bookid) {
         return recipeMapper.recipeCount(bookid);
     }
+
+    @Override
+    public List<Recipe> findRecipeContents(int bookid) {
+        return recipeMapper.findRecipeContents(bookid);
+    }
 }
