@@ -2,6 +2,7 @@ package lee.yorizori_mybatis.recipe.controller;
 
 import lee.yorizori_mybatis.common.web.YzRuntimeException;
 import lee.yorizori_mybatis.recipe.dto.Recipe;
+import lee.yorizori_mybatis.recipe.dto.RecipeJoinRecipePro;
 import lee.yorizori_mybatis.recipe.serviece.RecipeServiceImpl;
 import lee.yorizori_mybatis.recipeProcedure.dto.ReciepeProcedure;
 import lee.yorizori_mybatis.recipeProcedure.service.RecipeProcedureServiceImpl;
@@ -13,12 +14,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.standard.expression.Each;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Random;
 
 @Slf4j
 @Controller
@@ -71,27 +77,19 @@ public class RecipeRegistertController {
 
 
     @PostMapping
-    public String doPost(@ModelAttribute("recipe") Recipe recipe,
-                         @RequestParam(value = "procedure", required = false, defaultValue = "") String[] procedure,
-                         @RequestParam(value = "imgFileName", required = false) MultipartFile imgFileName){
-
-        recipeService.create(recipe);
-
-        ReciepeProcedure rp = new ReciepeProcedure();
-        rp.setReceipeId(recipe.getReceipeId());
-        for(int i = 0; i<procedure.length; i++){
-            rp.setSeqNum((i+1));
-            rp.setProcedure(procedure[0]);
-            log.info(procedure[0]);
-            recipeProcedureService.create(rp);
-        }
+    public String doPost(@ModelAttribute("recipeJoinRecipePro") RecipeJoinRecipePro recipeJoinRecipePro,
+                         @RequestParam(value = "procedure", required = false, defaultValue = "") String[] procedure){
 
 
+        MultipartFile getImgName = recipeJoinRecipePro.getImgFileName();
+        String FileName = getImgName.getOriginalFilename();
+        String contentType = null;
 
         try {
-            if (!imgFileName.isEmpty()) {
-                String fullPath = location + imgFileName.getOriginalFilename();
-                imgFileName.transferTo(new File(fullPath));
+            if (!getImgName.isEmpty()) {
+                Path path = Paths.get(location + FileName);
+                contentType = Files.probeContentType(path);
+                getImgName.transferTo(new File(path.toString()));
             }
 
         }catch (IOException e){
@@ -99,7 +97,44 @@ public class RecipeRegistertController {
         }
 
 
+        //recipeID를  넣어주기 위한 PFK 생성
+        Random rd = new Random();//랜덤 객체 생성
+        int RecipeId = (rd.nextInt(500)+1);
+
+        //Form.html에서 recipe + recipeProcedure 요소가 혼합되어있어서 한번에 받을 수 있는 recipeJoinRecipePro로 통째로 받아오고,
+        //여기서 따라 배분해서 생성
+        Recipe recipe = new Recipe();
+        recipe.setIngredients(recipeJoinRecipePro.getIngredients());
+        recipe.setBookId(recipeJoinRecipePro.getBookId());
+        recipe.setWriterId(recipeJoinRecipePro.getWriterId());
+        recipe.setReceipeName(recipeJoinRecipePro.getReceipeName());
+        recipe.setImgFileName(FileName);
+        log.info("파일이름{}",FileName);
+        recipe.setReceipeLevel(recipeJoinRecipePro.getReceipeLevel());
+        recipe.setReceipeTime(recipeJoinRecipePro.getReceipeTime());
+        log.info("파일 컨텐츠{}",contentType);
+        recipe.setImgContType(contentType);
+        recipe.setReceipeId(RecipeId);
+
+        recipeService.create(recipe);
+
+        //procedure가 배열이어서 반복문으로 돌려가면서 등록해줌
+        ReciepeProcedure rp = new ReciepeProcedure();
+        for(int i = 0; i<procedure.length; i++){
+            rp.setReceipeId(RecipeId);
+            rp.setSeqNum((i+1));
+            rp.setProcedure(procedure[0]);
+            recipeProcedureService.create(rp);
+        }
+
+
+
+
+
 
         return "redirect:/cookbook/list.do";
     }
+
+
+
 }

@@ -46,7 +46,7 @@ class RecipeTest {
     }
 
     @Test
-    @Disabled
+    //@Disabled
     void findById() {
         String type = "";
         String value = "";

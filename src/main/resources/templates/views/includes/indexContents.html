@@ -34,7 +34,7 @@
           <div class="card h-100">
             <!-- Product image-->
             <img class="card-img-top"
-              th:src="@{/assets/${cookbook.getImgFileName()}}"
+              th:src="@{/assets/}+${cookbook.getImgFileName()}"
               th:alt="${cookbook.getImgFileName()}" />
             <!-- Product details-->
             <div class="card-body p-4">

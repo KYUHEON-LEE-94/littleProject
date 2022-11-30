@@ -4,21 +4,24 @@ package lee.yorizori_mybatis.user.controller;
 
 import lee.yorizori_mybatis.user.dto.User;
 import lee.yorizori_mybatis.user.service.UserServiceImpl;
+import lombok.Setter;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-
-
+@Slf4j
 @Controller
 public class LoginController {
 
@@ -53,12 +56,14 @@ public class LoginController {
     public String Login(@RequestParam("id") String id,
                         @RequestParam("passwd") String passwd,
                         @RequestParam("saveid") String saveid,
-            HttpServletRequest request, HttpServletResponse response,
+                        HttpServletRequest request,
+                        HttpServletResponse response,
                         RedirectAttributes redirect,
                         Model model
                         ){
 
         User loginUser = userService.findByIdAndPasswd(id,passwd);
+
 
         if (loginUser != null) {
             Cookie loginCookie = new Cookie("loginid", loginUser.getId());
@@ -66,7 +71,6 @@ public class LoginController {
             response.addCookie(loginCookie);
             redirect.addAttribute("loginid",loginUser.getId());
             redirect.addAttribute("loginStat", true);
-
 
             if (saveid != null) {
                 Cookie saveidCookie = new Cookie("saveid", loginUser.getId());
@@ -76,6 +80,7 @@ public class LoginController {
 
 
             }
+
 
             return "redirect:/";
         } else {
