@@ -23,7 +23,7 @@
         </select>
 
     <select id="findRecipeContents"
-            resultType="Recipe">
+            resultType="RecipeJoinRecipePro">
         SELECT r.RECIPE_ID, r.recipe_name, r.recipe_time, r.recipe_level, r.writer_id,r.INGREDIENTS, rp.SEQ_NUM,rp.PROCEDURE,r.img_cont_type, r.img_file_name
         FROM recipe r
                  JOIN recipe_procedure rp on r.RECIPE_ID = rp.RECIPE_ID

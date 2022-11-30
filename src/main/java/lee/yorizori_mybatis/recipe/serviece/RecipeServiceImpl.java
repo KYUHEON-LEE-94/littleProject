@@ -2,6 +2,7 @@ package lee.yorizori_mybatis.recipe.serviece;
 
 import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.recipe.dto.Recipe;
+import lee.yorizori_mybatis.recipe.dto.RecipeJoinRecipePro;
 import lee.yorizori_mybatis.recipe.mapper.RecipeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<Recipe> findRecipeContents(int bookid) {
+    public List<RecipeJoinRecipePro> findRecipeContents(int bookid) {
         return recipeMapper.findRecipeContents(bookid);
     }
 }

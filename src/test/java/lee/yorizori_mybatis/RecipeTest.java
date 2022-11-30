@@ -3,6 +3,7 @@ package lee.yorizori_mybatis;
 
 import lee.yorizori_mybatis.common.web.page.Params;
 import lee.yorizori_mybatis.recipe.dto.Recipe;
+import lee.yorizori_mybatis.recipe.dto.RecipeJoinRecipePro;
 import lee.yorizori_mybatis.recipe.mapper.RecipeMapper;
 import lee.yorizori_mybatis.recipe.serviece.RecipeServiceImpl;
 import lee.yorizori_mybatis.recipeProcedure.service.RecipeProcedureServiceImpl;
@@ -45,7 +46,7 @@ class RecipeTest {
     }
 
     @Test
-    //@Disabled
+    @Disabled
     void findById() {
         String type = "";
         String value = "";
@@ -60,10 +61,10 @@ class RecipeTest {
     }
 
     @Test
-    @Disabled
+    //@Disabled
     void findRecipeContents() {
 
-        List<Recipe> list = service.findRecipeContents(24);
+        List<RecipeJoinRecipePro> list = service.findRecipeContents(24);
         System.out.println(list);
     }
 
